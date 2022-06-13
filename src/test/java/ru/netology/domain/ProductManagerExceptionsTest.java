@@ -7,7 +7,7 @@ import ru.netology.repository.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ProductManagerTest {
+public class ProductManagerExceptionsTest {
   Product book1 = new Book(1, "Кот в шляпе", 62, "Доктор Сьюз");
   Product book2 = new Book(2, "Кот в сапогах", 40, "Шарль Перро");
   Product telephone1 = new Smartphone(3, "Nokia", 120, "Финляндия");
@@ -39,4 +39,24 @@ public class ProductManagerTest {
     });
   }
   
+  @Test
+  public void shouldAddNewProductInRepo() {
+    Product[] products = {book1, book2};
+    manager.setProducts(products);
+    manager.add(book3);
+    
+    Product[] actual = manager.getAllProducts();
+    Product[] excpected = {book1, book2, book3};
+    assertArrayEquals(actual, excpected);
+  }
+  
+  @Test
+  public void shouldThrowExceptionThenAddProduct() {
+    Product[] products = {book1, book2};
+    manager.setProducts(products);
+    
+    assertThrows(AlreadyExistsException.class, () -> {
+      manager.add(book2);
+    });
+  }
 }

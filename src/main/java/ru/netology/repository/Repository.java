@@ -6,6 +6,9 @@ public class Repository {
   private Product[] products = new Product[0];
   
   public void save(Product newProduct) {
+    if (findById(newProduct.getId()) != null) {
+      throw new AlreadyExistsException("Товар с id= " + newProduct.getId() + " уже есть репозитории");
+    }
     Product[] tmp = new Product[products.length + 1];
     for (int i = 0; i < products.length; i++) {
       tmp[i] = products[i];
@@ -17,11 +20,9 @@ public class Repository {
   public Product[] getProducts() {
     return products;
   }
-  
   public void setProducts(Product[] products) {
     this.products = products;
   }
-  
   public Product findById(int id) {
     for (Product product : products) {
       if (product.getId() == id) {
@@ -34,7 +35,7 @@ public class Repository {
   public void removeById(int id) {
     
     if (findById(id) == null) {
-      throw new NotFoundException("Товара с id = " + id + " нет в репозитории");
+      throw new NotFoundException("Удаление невозможно. Товара с id = " + id + " нет в репозитории");
     }
     Product[] tmp = new Product[products.length - 1];
     int index = 0;
