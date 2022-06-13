@@ -1,4 +1,4 @@
-package ru.netology.domain;
+package ru.netology.manager;
 
 public class Product {
   protected int id;
@@ -15,7 +15,7 @@ public class Product {
     return id;
   }
   
-  public boolean matches(String search) {
-    return (name.contains(search));
+  public String getName() {
+    return name;
   }
 }

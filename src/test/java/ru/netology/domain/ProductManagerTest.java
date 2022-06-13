@@ -1,8 +1,11 @@
 package ru.netology.domain;
 
 import org.junit.jupiter.api.Test;
+import ru.netology.manager.*;
+import ru.netology.repository.*;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ProductManagerTest {
   Product book1 = new Book(1, "Кот в шляпе", 62, "Доктор Сьюз");
@@ -15,31 +18,7 @@ public class ProductManagerTest {
   Manager manager = new Manager(repo);
   
   @Test
-  public void shouldAddNewProductInEmptyRepo() {
-    manager.add(book1);
-    
-    Product[] actual = manager.getAllProducts();
-    Product[] expected = {book1};
-    
-    assertArrayEquals(expected, actual);
-  }
-  
-  @Test
-  public void shouldAddNewProductInNotEmptyRepo() {
-    
-    Product[] products = {book1, book2};
-    manager.setProducts(products);
-    manager.add(book3);
-    
-    Product[] actual = manager.getAllProducts();
-    Product[] expected = {book1, book2, book3};
-    
-    assertArrayEquals(expected, actual);
-    
-  }
-  
-  @Test
-  public void shouldRemoveProductByIdThenExists() {
+  public void shouldRemoveProductFromRepo() {
     Product[] products = {book1, book2, telephone1};
     manager.setProducts(products);
     manager.removeProduct(3);
@@ -51,69 +30,13 @@ public class ProductManagerTest {
   }
   
   @Test
-  public void shouldNotRemoveProductThenProductIdNotExists() {
-    Product[] products = {book1, book2, telephone1};
-    manager.setProducts(products);
-    manager.removeProduct(4);
-    
-    Product[] actual = manager.getAllProducts();
-    Product[] expected = {book1, book2, telephone1};
-    
-    assertArrayEquals(expected, actual);
-  }
-  
-  @Test
-  public void shouldFindBooksByName() {
-    Product[] products = {book1, book2, book3};
-    manager.setProducts(products);
-    
-    Product[] actual = manager.matches("Кот");
-    Product[] expected = {book1, book2};
-    
-    assertArrayEquals(expected, actual);
-  }
-  
-  @Test
-  public void shouldNotFindProductsByName() {
-    Product[] products = {book1, book2, book3};
-    manager.setProducts(products);
-    
-    Product[] actual = manager.matches("кот");
-    Product[] expected = {};
-    
-    assertArrayEquals(expected, actual);
-  }
-  
-  @Test
-  public void shouldFindSmartphonesByName() {
+  public void shouldThrowExceptionThenTryRemoveNotExistingProduct() {
     Product[] products = {telephone1, telephone2};
     manager.setProducts(products);
     
-    Product[] actual = manager.matches("Sony");
-    Product[] expected = {telephone2};
-    
-    assertArrayEquals(expected, actual);
+    assertThrows(NotFoundException.class, () -> {
+      repo.removeById(1);
+    });
   }
   
-  @Test
-  public void shouldFindBooksByAuthor() {
-    Product[] products = {book1, book3};
-    manager.setProducts(products);
-    
-    Product[] actual = manager.matches("Сьюз");
-    Product[] expected = {book1};
-    
-    assertArrayEquals(expected, actual);
-  }
-  
-  @Test
-  public void shouldFindSmartphonesByManufacturer() {
-    Product[] products = {telephone1, telephone2};
-    manager.setProducts(products);
-    
-    Product[] actual = manager.matches("Япония");
-    Product[] expected = {telephone2};
-    
-    assertArrayEquals(expected, actual);
-  }
 }

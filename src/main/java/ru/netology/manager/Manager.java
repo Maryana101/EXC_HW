@@ -1,4 +1,6 @@
-package ru.netology.domain;
+package ru.netology.manager;
+
+import ru.netology.repository.Repository;
 
 public class Manager {
   private Repository repo = new Repository();
@@ -13,11 +15,7 @@ public class Manager {
   }
   
   public void removeProduct(int id) {
-    try {
-      repo.removeById(id);
-    } catch (ArrayIndexOutOfBoundsException e) {
-      //doNothing
-    }
+    repo.removeById(id);
   }
   
   public void setProducts(Product[] products) {
@@ -28,12 +26,19 @@ public class Manager {
     return repo.getProducts();
   }
   
-  public Product[] matches(String search) {
+  public static boolean matches(Product product, String search) {
+    return product.getName().contains(search);
+  }
+  
+  public Product[] searchBy(String text) {
     Product[] result = new Product[0];
-    for (Product product : repo.getProducts()) {
-      if (product.matches(search)) {
+    
+    for (Product product : getAllProducts()) {
+      if (matches(product, text)) {
         Product[] tmp = new Product[result.length + 1];
-        System.arraycopy(result, 0, tmp, 0, result.length);
+        for (int i = 0; i < result.length; i++) {
+          tmp[i] = result[i];
+        }
         tmp[tmp.length - 1] = product;
         result = tmp;
       }
